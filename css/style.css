@@ -3,14 +3,19 @@
     margin: 0 auto;
   }
   
-  .container {
+  #albumResults {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
   }
   
-  .card {
+  .albumDiv {
     margin: 1rem;
     border: 1px solid gray;
+  }
+
+  .albumDiv > p {
+    text-align: center;
   }
   
   @media screen and (min-width: 600px) {

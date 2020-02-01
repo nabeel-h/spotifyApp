@@ -1764,57 +1764,105 @@ function createFormBody(Data) {
     return formBody
 };
 
-window.getArtistsAlbums = function getArtisitsAlbums(artist) {
-    let albumResults = null;
-        const Url = "https://accounts.spotify.com/api/token";
-        const Data = {grant_type: "client_credentials"};
 
-        const otherParam = {
-            method: "POST",
-            headers: {
-                Authorization: `Basic ${btoa(CLIENT_ID +":" + CLIENT_SECRET)}`,
-                "Content-Type": 'application/x-www-form-urlencoded',
-            },
-            body: createFormBody(Data)
-        };
+function getArtisitsAlbums(artist) {
 
-        fetch(Url, otherParam)
-        .then(data=>{
-            console.log(data);
-            return data.json()})
-        .then(
-            res=>{
-            //console.log(res)
-            var SpotifyWebApi = require('spotify-web-api-js');
-            var spotifyApi = new SpotifyWebApi();
-            spotifyApi.setAccessToken(res.access_token);
-            
-            // get artistID for queried artist
-            let artistID = null;
-            spotifyApi.searchArtists(artist)
-            .then(function(data) {
-                console.log("Searched artist info...");
-                //console.log(data);
-                artistID = data.artists.items[0].id;
-                console.log(`Artist ID for ${artist} is ${artistID}`);
+    const Url = "https://accounts.spotify.com/api/token";
+    const Data = {grant_type: "client_credentials"};
 
-                // return artists albums
-                spotifyApi.getArtistAlbums(artistID)
-                .then(function(data) {
-                //console.log('Artist albums', data.items);
-                albumResults = data.items;
-                }, function(err) {
-                console.error(err);
-                });
-            
-            }, function(err) {
-                console.error(err);
-            });
-        })
-        .catch(error=>console.log(error))
-
-    return albumResults;
+    const otherParam = {
+        method: "POST",
+        headers: {
+            Authorization: `Basic ${btoa(CLIENT_ID +":" + CLIENT_SECRET)}`,
+            "Content-Type": 'application/x-www-form-urlencoded',
+        },
+        body: createFormBody(Data)
     };
+
+    fetch(Url, otherParam)
+    .then(data=>{
+        console.log(data);
+        return data;
+        })
+    .then(
+        res=>{
+        //console.log(res)
+        var SpotifyWebApi = require('spotify-web-api-js');
+        var spotifyApi = new SpotifyWebApi();
+        spotifyApi.setAccessToken(res.access_token);
+        
+        // get artistID for queried artist
+        let artistID = null;
+        spotifyApi.searchArtists(artist)
+        .then(function(data) {
+            console.log("Searched artist info...");
+            //console.log(data);
+            artistID = data.artists.items[0].id;
+            console.log(`Artist ID for ${artist} is ${artistID}`);
+            
+            /*
+            // return artists albums
+            spotifyApi.getArtistAlbums(artistID)
+            .then(function(data) {
+            //console.log('Artist albums', data.items);
+            albumResults = data.items;
+            }, function(err) {
+            console.error(err);
+            });
+            */
+
+            return spotifyApi.getArtistAlbums(artistID, function(err, data) {
+                if (err) {
+                    console.error(err)
+                }
+                else {
+                    console.log('Artist albums', data)};
+            });
+        
+        }, function(err) {
+            console.error(err);
+        });
+    })
+    .catch(error=>console.log(error));
+};
+
+
+
+//getArtisitsAlbums("Kendrick Lamar");
+//console.log(albumResultsOut);
+
+
+async function getAccessToken() {
+    const Url = "https://accounts.spotify.com/api/token";
+    const Data = {grant_type: "client_credentials"};
+
+    const otherParam = {
+        method: "POST",
+        headers: {
+            Authorization: `Basic ${btoa(CLIENT_ID +":" + CLIENT_SECRET)}`,
+            "Content-Type": 'application/x-www-form-urlencoded',
+        },
+        body: createFormBody(Data)
+    };
+
+    const response = await fetch(Url, otherParam)
+    const json = await response.json()
+    return json;
+};
+
+
+
+let value = getAccessToken().then(function(result) {
+    return result;
+});
+
+console.log(value);
+
+
+
+
+
+
 
 
 /*
