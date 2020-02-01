@@ -3,6 +3,10 @@
     margin: 0 auto;
   }
   
+  #header {
+    text-align: center;
+  }
+
   #albumResults {
     display: flex;
     flex-wrap: wrap;
@@ -12,10 +16,14 @@
   .albumDiv {
     margin: 1rem;
     border: 1px solid gray;
+    word-wrap: break-word;
+    text-align: center;
+    max-width: 300px;
   }
 
   .albumDiv > p {
     text-align: center;
+    word-wrap: break-word;
   }
   
   @media screen and (min-width: 600px) {
@@ -29,3 +37,20 @@
       flex: 1 1 calc(33% - 2rem);
     }
   }
+
+
+
+.albumDiv:hover .tooltip {
+    display: block;
+}
+
+.tooltip {
+    display: none;
+    background: #C8C8C8;
+    padding: 10px;
+    position: absolute;
+    z-index: 1000;
+    width:100px;
+    height:100px;
+    border-radius: 20px;
+}

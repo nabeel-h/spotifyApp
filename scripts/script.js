@@ -64,17 +64,92 @@ async function getArtistAlbums(artistID, access_token) {
     return json;
 };
 
-    
+async function getArtistTopTracks(artistID, access_token) {
+    const Url = "https://api.spotify.com/v1/artists/"+artistID+"/top-tracks?country=US";
+    console.log(Url);
+    const otherParam = {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer "+access_token
+        }
+    };
+    const response = await fetch(Url, otherParam);
+    const json = await response.json();
+    return json;
+};
+
+function handleTopTracks(tracks){
+    // grab 5 tracks, no more than 2 from one album
+    let trackList = [];
+    let albumCounter = {};
+    let uniqueTracks = [];
+
+    tracks.tracks.forEach(function(track) {
+        let albumName = track.album.id;
+        let songName = track.name;
+        let songID = track.id;
+        let songReleaseDate = track.release_date;
+        
+        if (albumCounter.hasOwnProperty(albumName) === false) {
+            albumCounter[String(albumName)] = 0;
+        };
+        albumCounter[String(albumName)] = albumCounter[String(albumName)] + 1;
+        
+        // if more than 2 songs from same album, then don't add
+        if (albumCounter[String(albumName)] > 2) {
+            return;
+        };
+
+        if (trackList.length === 5) {
+            return;
+
+        };
+        uniqueTracks.push(songID);
+        trackList.push({
+            "songName": songName,
+            "songID": songID,
+            "songReleaseDate": songReleaseDate,
+            "albumID": albumName
+        });
+    });
+
+    // if less than 5 tracks, then go through tracks again and add tracks not already present
+    if (trackList.length < 5) {
+        tracks.tracks.forEach(function(track) {
+            let albumName = track.album.id;
+            let songName = track.name;
+            let songID = track.id;
+            let songReleaseDate = track.release_date;
+
+            if (uniqueTracks.indexOf(songID) > 0) {
+                return;
+            };
+            trackList.push({
+                "songName": songName,
+                "songID": songID,
+                "songReleaseDate": songReleaseDate,
+                "albumID": albumName
+            });
+
+        });
+
+        return trackList;
+
+    } else {
+    return trackList;
+    };
+};
+
 const artistInputBtn = document.querySelector("#artistInputBtn");
 artistInputBtn.addEventListener('click', generateArtistAlbums);
 
 const artistResults = document.querySelector("#albumResults");
 
 function generateArtistAlbums() {
-    const artistInput = document.querySelector("#artistInput").value;
+    let artistInput = document.querySelector("#artistInput").value;
     
     getAccessToken().then(function(token) {
-        deleteResults();
+        deleteAlbumDivs();
         let accessToken = token["access_token"];
           searchArtist(artistInput, accessToken).then(function(response) {
             console.log(response);
@@ -88,41 +163,81 @@ function generateArtistAlbums() {
                 for (let j=0;j <albums.items.length;j++) {
                     let albumPic300 = albums.items[j].images[1]
                     let albumName = albums.items[j]["name"];
+                    let releaseDate = albums.items[j]["release_date"];
+                    let numTracks = albums.items[j]["total_tracks"];
                     if (albumUniques.indexOf(albumName) > 0) {
                         continue;
                         };
                     albumUniques.push(albumName);    
-                    
-                    let albumDiv = document.createElement("div")
-                    albumDiv.classList.add("albumDiv");
-
-                    let albumP = document.createElement("p");
-                    albumP.textContent = albumName;
-
-                    let albumPic = document.createElement("img");
-                    albumPic.src = albumPic300.url;
-                    albumPic.height = albumPic300.height;
-                    albumPic.width = albumPic300.width;
-                    albumPic.alt = albumName;
-
-                    
-                    albumDiv.appendChild(albumPic);
-                    albumDiv.appendChild(albumP)
-
-                    artistResults.appendChild(albumDiv);
+                    createAlbumDivs(albumName, albumPic300, releaseDate, numTracks);
                 };
             });
           });
-
-
-        //artistResults.appendChild(newP);
     });
-}
+};
 
-function deleteResults() {
+function generateArtistTopTracks(){
+    let artistInput = document.querySelector("#artistInput").value;
+    //console.log(artistInput);
+    getAccessToken().then(function(token) {
+        let accessToken = token["access_token"];
+        //console.log(accessToken);
+          searchArtist(artistInput, accessToken).then(function(response) {
+            //console.log(response);
+            let artistID = response.artists.items[0]["id"];
+            getArtistTopTracks(artistID, accessToken).then(function(tracks) {
+                console.log(tracks);
+                console.log(handleTopTracks(tracks));
+            });
+          })
+        });
+};
+
+
+function createAlbumDivs(albumName, albumPic300, releaseDate, numTracks){
+    let albumDiv = document.createElement("div")
+    albumDiv.classList.add("albumDiv");
+    
+    /*
+    <div class="tooltip">Hover over me
+    <span class="tooltiptext">Tooltip text</span>
+    </div> 
+    */
+    const toolTipSpan = document.createElement("span");
+    const toolTipSpanReleaseDate = document.createElement("p");
+    const toolTipSpanNumTracks = document.createElement("p");
+
+    toolTipSpanReleaseDate.textContent = "Released: "+ releaseDate;
+    toolTipSpanNumTracks.textContent = "# of Tracks: "+numTracks;
+    //toolTipSpanNumTracks.classList.add("tooltiptext");
+    //toolTipSpanReleaseDate.classList.add("tooltiptext");
+    toolTipSpan.classList.add("tooltip");
+    toolTipSpan.appendChild(toolTipSpanNumTracks);
+    toolTipSpan.appendChild(toolTipSpanReleaseDate);
+
+    let albumP = document.createElement("p");
+    albumP.textContent = albumName;
+
+    let albumPic = document.createElement("img");
+    albumPic.src = albumPic300.url;
+    albumPic.height = albumPic300.height;
+    albumPic.width = albumPic300.width;
+    albumPic.alt = albumName;
+
+    albumDiv.appendChild(toolTipSpan);
+
+    albumDiv.appendChild(albumPic);
+    albumDiv.appendChild(albumP);
+    
+    artistResults.appendChild(albumDiv);
+};
+
+function deleteAlbumDivs() {
     var child = artistResults.lastElementChild;
         while (child) { 
             artistResults.removeChild(child); 
             child = artistResults.lastElementChild; 
         };
 };
+
+
