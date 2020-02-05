@@ -5,8 +5,7 @@ class Main extends React.Component {
     render() {
         return (
             <div id="wrapper">
-                <Helmet defaultTitle="SpotifyApp">
-                    <link rel="stylesheet" href="css/style.css"/>       
+                <Helmet defaultTitle="SpotifyApp">     
                 </Helmet>
             </div>
         )
