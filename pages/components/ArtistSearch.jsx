@@ -8,7 +8,7 @@ class ArtistSearch extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.sendData = this.sendData.bind(this);
+        this.updateArtistCallback = this.updateArtistCallback.bind(this);
     }
 
     handleChange(event) {
@@ -16,19 +16,20 @@ class ArtistSearch extends React.Component {
     }
 
     handleSubmit(event) {
-        alert("submit button was clicked for: "+this.state.artist)
-        this.sendData();
+        console.log("submit button was clicked for: "+this.state.artist);
+        this.updateArtistCallback();
+        //alert(this.state.artist);
     }
 
-    sendData = () => {
+    updateArtistCallback() {
         this.props.artistSearchCallback(this.state.artist);
     }
+    
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
                 <label>Artist Name:
                 <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleChange}/>
-                
                 </label>
                 <input type="submit" value="submit" />
                 <style jsx>{`

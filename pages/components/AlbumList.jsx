@@ -5,12 +5,13 @@ import React from 'react';
 class AlbumList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {albums: this.props.data.albums}
+        this.state = {albums: this.props.data}
     };
     render() {
-        return (
+        return(
             <div>
-                <div class="albumResults">
+                
+                <div className="albumResults">
                     {this.state.albums.map((album, i) => <Album key={i}
                     data={album} />)}
                 </div>
@@ -45,8 +46,8 @@ class AlbumHeader extends React.Component {
 class Album extends React.Component {
     render() {
         return (
-            <div class="albumDiv">
-                <span class="tooltip">
+            <div className="albumDiv">
+                <span className="tooltip">
                     <p>Released: {this.props.data.releaseDate}</p>
                     <p># of Tracks: {this.props.data.numTracks}</p>
                 </span>
