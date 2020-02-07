@@ -5,14 +5,32 @@ import React from 'react';
 class AlbumList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {albums: this.props.data}
+        this.state = {albums: props}
     };
     render() {
+        let albumData = this.props.data;
+        console.log("Data passed(state) into AlbumList", this.state);
+        console.log("Data passed(props) into AlbumList", this.props.data);
+        if (!albumData) {
+            return(
+                <div>
+                <div className="albumResults">
+                </div>
+                <style jsx>{`
+                     {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    }
+                `}</style>
+            </div>
+            )
+        } else {
+
         return(
             <div>
-                
                 <div className="albumResults">
-                    {this.state.albums.map((album, i) => <Album key={i}
+                    {albumData.map((album, i) => <Album key={i}
                     data={album} />)}
                 </div>
                 <style jsx>{`
@@ -25,6 +43,7 @@ class AlbumList extends React.Component {
             </div>
             
         );
+    };
     }
 }
 
