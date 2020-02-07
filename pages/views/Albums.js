@@ -24,28 +24,43 @@ class Albums extends React.Component {
             albums: []
         });
         }
+    
+    _handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            this.generateArtistAlbums(this.updateAlbumsCallback);
+        };
+    };
 
     handleArtistChange = (event) => {
         this.setState({artist: event.target.value})
     };
 
     handleArtistSubmit = (event) => {
-        const results = this.generateArtistAlbums(this.state.artist);
+        this.generateArtistAlbums(this.updateAlbumsCallback);
+    }
+
+    updateAlbumsCallback = (albumResults) => {
+        //this.setState({albums: albumResults})
+        console.log("ALB RESULTS - CALLBACK", albumResults);
+        this.setState({
+            albums: albumResults
+        })
     }
 
     printState = () => {
         console.log(this.state);
     }
 
-    generateArtistAlbums = (artistInput) => {
-        
+    generateArtistAlbums = (callback) => {
         let albumResults = [];
+        let artistInput = this.state.artist;
         getAccessToken().then(function(token) {
             let accessToken = token["access_token"];
               searchArtist(artistInput, accessToken).then(function(response) {
                 console.log("API CALL RESPONSE:", response);
                 let artistID = response.artists.items[0]["id"];
                 getArtistAlbums(artistID, accessToken).then(function(albums) {
+                    
                     console.log("API CALL ALBUMS", albums);
                     // keeps track of unique album names
                     // if already in there, then dont list
@@ -67,7 +82,7 @@ class Albums extends React.Component {
                         });
                     };
                     console.log("CLEANED ARRAY ALBUMS for ARIST: "+artistInput, albumResults);
-                    
+                    callback(albumResults);
                 })
               });
         });
@@ -77,13 +92,12 @@ class Albums extends React.Component {
         console.log("Data pre render",this.state);
         return (
         <div>
-            <p>{this.state.artist}</p>
             <Main />
             <label>Artist Name:
-            <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleArtistChange}/>
+            <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleArtistChange} onKeyDown={this._handleKeyDown}/>
             </label>
             <input type="submit" value="submit" onClick={this.handleArtistSubmit}/>
-            <input type="submit" value="print_state" onClick={this.printState}/>
+            <input type="submit" value="consolePrintState" onClick={this.printState}/>
             <style jsx>{`
                 text-align: center;
             `}</style>
@@ -95,92 +109,70 @@ class Albums extends React.Component {
 };
 
 
-const test_data = {
-    albums:
-    [
-        {
-            "albumPic300": 'https://i.scdn.co/image/01273298d6d7ec9091637a833b6188f990ddb6a2',
-            "albumName": "Kamikaze",
-            "releaseDate": "01-01-2019",
-            "numTracks": 10,
-        },
-        {
-            "albumPic300": 'https://i.scdn.co/image/3f505feb301e37af5d6e23bc6782bbf6cb575183',
-            "albumName": "The Marshalls Mathers LP",
-            "releaseDate": "01-01-2017",
-            "numTracks": 12,
-        }
-    ],
-    artist: "Eminem"
-}
-
-
-/*********************************** */
-
 
 let CLIENT_ID = "5a9ee656e60549c5999eb591375e3af9";
 let CLIENT_SECRET = "50c5be6ce3684f578b1693b8007d6c0e";
 
-    // Used to supply proper body format for x-www-form-urlencoded in body POST request to /token endpoint
-    function createFormBody(Data) {
-        var formBody = [];
-        for (var property in Data) {
-            var encodedKey = encodeURIComponent(property);
-            var encodedValue = encodeURIComponent(Data[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        };
-        return formBody
-        };
-    
-    async function getAccessToken() {
-        const Url = "https://accounts.spotify.com/api/token";
-        const Data = {grant_type: "client_credentials"};
-    
-        const otherParam = {
-            method: "POST",
-            headers: {
-                Authorization: `Basic ${btoa(CLIENT_ID +":" + CLIENT_SECRET)}`,
-                "Content-Type": 'application/x-www-form-urlencoded',
-            },
-            body: createFormBody(Data)
-        };
-    
-        const response = await fetch(Url, otherParam)
-        const json = await response.json()
-        return json;
+// Used to supply proper body format for x-www-form-urlencoded in body POST request to /token endpoint
+function createFormBody(Data) {
+    var formBody = [];
+    for (var property in Data) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(Data[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
     };
-    
-    async function searchArtist(artist, access_token) {
-        let artist_split = artist.split();
-        let artist_query = artist_split.join("%20")
-        console.log(artist_query)
-    
-        const Url = "https://api.spotify.com/v1/search?"+"q="+artist_query+"&type=artist";
-        console.log(Url);
-        const otherParam = {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer "+access_token
-            }
-        };
-        const response = await fetch(Url, otherParam)
-        const json = await response.json()
-        return json;
+    return formBody
     };
-    
-    async function getArtistAlbums(artistID, access_token) {
-        const Url = "https://api.spotify.com/v1/artists/"+artistID+"/albums";
-        console.log(Url);
-        const otherParam = {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer "+access_token
-            }
-        };
-        const response = await fetch(Url, otherParam)
-        const json = await response.json()
-        return json;
+
+async function getAccessToken() {
+    const Url = "https://accounts.spotify.com/api/token";
+    const Data = {grant_type: "client_credentials"};
+
+    const otherParam = {
+        method: "POST",
+        headers: {
+            Authorization: `Basic ${btoa(CLIENT_ID +":" + CLIENT_SECRET)}`,
+            "Content-Type": 'application/x-www-form-urlencoded',
+        },
+        body: createFormBody(Data)
     };
+
+    const response = await fetch(Url, otherParam)
+    const json = await response.json()
+    return json;
+};
+
+async function searchArtist(artist, access_token) {
+    let artist_split = artist.split();
+    let artist_query = artist_split.join("%20")
+    console.log(artist_query)
+
+    const Url = "https://api.spotify.com/v1/search?"+"q="+artist_query+"&type=artist";
+    console.log(Url);
+    const otherParam = {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer "+access_token
+        }
+    };
+    const response = await fetch(Url, otherParam)
+    const json = await response.json()
+    return json;
+};
+
+async function getArtistAlbums(artistID, access_token) {
+    const Url = "https://api.spotify.com/v1/artists/"+artistID+"/albums";
+    console.log(Url);
+    const otherParam = {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer "+access_token
+        }
+    };
+    const response = await fetch(Url, otherParam)
+    const json = await response.json()
+    return json;
+};
 
 
 async function getArtistTopTracks(artistID, access_token) {
@@ -196,6 +188,29 @@ async function getArtistTopTracks(artistID, access_token) {
     const json = await response.json();
     return json;
 };
+
+async function processAlbumsResponse(albums) {
+    console.log("API CALL ALBUMS", albums);
+    // keeps track of unique album names
+    // if already in there, then dont list
+    let albumUniques = [];
+    for (let j=0;j <albums.items.length;j++) {
+        let albumPic300 = albums.items[j].images[1]
+        let albumName = albums.items[j]["name"];
+        let releaseDate = albums.items[j]["release_date"];
+        let numTracks = albums.items[j]["total_tracks"];
+        if (albumUniques.indexOf(albumName) > 0) {
+            continue;
+            };
+        albumUniques.push(albumName);
+        albumResults.push({
+            "albumName": albumName,
+            "albumPic300": albumPic300,
+            "releaseDate": releaseDate,
+            "numTracks": numTracks
+        });
+    };
+}
 
 function handleTopTracks(tracks){
     // grab 5 tracks, no more than 2 from one album
@@ -258,15 +273,5 @@ function handleTopTracks(tracks){
     return trackList;
     };
 };
-
-
-
-/**
-https://stackoverflow.com/questions/50430931/asynchronously-updating-state-after-a-function-call-returns-api-results
-*/
-
-
-
-
 
 export default Albums;

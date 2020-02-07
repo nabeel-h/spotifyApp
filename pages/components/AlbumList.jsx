@@ -70,7 +70,7 @@ class Album extends React.Component {
                     <p>Released: {this.props.data.releaseDate}</p>
                     <p># of Tracks: {this.props.data.numTracks}</p>
                 </span>
-                <img src={this.props.data.albumPic300} alt={this.props.data.albumName} width="300" height="300"></img>
+                <img src={this.props.data.albumPic300.url} alt={this.props.data.albumName} width="300" height="300"></img>
                 <p>{this.props.data.albumName}</p>
                 <style>{`
                     .albumDiv {
