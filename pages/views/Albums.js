@@ -1,6 +1,6 @@
 import React from 'react';
 import AlbumList from '../components/AlbumList.jsx';
-import ArtistSearch from '../components/ArtistSearch.jsx'
+//import {createFormBody, getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from '../api/spotify/spotify.js';
 import Main from '../layouts/Main.js'
 
 class Albums extends React.Component {
@@ -17,17 +17,16 @@ class Albums extends React.Component {
     };
 
     initData = () => {
-        let initArtist = "Eminem";
-
+        let initArtist = "Tupac";
         this.setState({
             artist: initArtist,
-            albums: []
+            albums: this.generateArtistAlbums(this.updateAlbumsCallback, initArtist)
         });
         }
     
     _handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            this.generateArtistAlbums(this.updateAlbumsCallback);
+            this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
         };
     };
 
@@ -36,53 +35,51 @@ class Albums extends React.Component {
     };
 
     handleArtistSubmit = (event) => {
-        this.generateArtistAlbums(this.updateAlbumsCallback);
+        this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
     }
 
-    updateAlbumsCallback = (albumResults) => {
+    updateAlbumsCallback = (albums) => {
         //this.setState({albums: albumResults})
+        let albumResults = [];
+        console.log("API CALL ALBUMS", albums);
+        // keeps track of unique album names
+        // if already in there, then dont list
+        let albumUniques = [];
+        for (let j=0;j <albums.items.length;j++) {
+            let albumPic300 = albums.items[j].images[1]
+            let albumName = albums.items[j]["name"];
+            let releaseDate = albums.items[j]["release_date"];
+            let numTracks = albums.items[j]["total_tracks"];
+            if (albumUniques.indexOf(albumName) > 0) {
+                continue;
+                };
+            albumUniques.push(albumName);
+            albumResults.push({
+                "albumName": albumName,
+                "albumPic300": albumPic300,
+                "releaseDate": releaseDate,
+                "numTracks": numTracks
+            });
+        console.log("CLEANED ARRAY ALBUMS for ARIST: " + this.state.artist, albumResults);
         console.log("ALB RESULTS - CALLBACK", albumResults);
         this.setState({
             albums: albumResults
-        })
-    }
+            })
+        }
+    };
 
     printState = () => {
         console.log(this.state);
     }
 
-    generateArtistAlbums = (callback) => {
-        let albumResults = [];
-        let artistInput = this.state.artist;
+    generateArtistAlbums = (updateAlbumsCallback, artistInput) => {
         getAccessToken().then(function(token) {
             let accessToken = token["access_token"];
               searchArtist(artistInput, accessToken).then(function(response) {
                 console.log("API CALL RESPONSE:", response);
                 let artistID = response.artists.items[0]["id"];
                 getArtistAlbums(artistID, accessToken).then(function(albums) {
-                    
-                    console.log("API CALL ALBUMS", albums);
-                    // keeps track of unique album names
-                    // if already in there, then dont list
-                    let albumUniques = [];
-                    for (let j=0;j <albums.items.length;j++) {
-                        let albumPic300 = albums.items[j].images[1]
-                        let albumName = albums.items[j]["name"];
-                        let releaseDate = albums.items[j]["release_date"];
-                        let numTracks = albums.items[j]["total_tracks"];
-                        if (albumUniques.indexOf(albumName) > 0) {
-                            continue;
-                            };
-                        albumUniques.push(albumName);
-                        albumResults.push({
-                            "albumName": albumName,
-                            "albumPic300": albumPic300,
-                            "releaseDate": releaseDate,
-                            "numTracks": numTracks
-                        });
-                    };
-                    console.log("CLEANED ARRAY ALBUMS for ARIST: "+artistInput, albumResults);
-                    callback(albumResults);
+                    updateAlbumsCallback(albums);
                 })
               });
         });
@@ -189,28 +186,6 @@ async function getArtistTopTracks(artistID, access_token) {
     return json;
 };
 
-async function processAlbumsResponse(albums) {
-    console.log("API CALL ALBUMS", albums);
-    // keeps track of unique album names
-    // if already in there, then dont list
-    let albumUniques = [];
-    for (let j=0;j <albums.items.length;j++) {
-        let albumPic300 = albums.items[j].images[1]
-        let albumName = albums.items[j]["name"];
-        let releaseDate = albums.items[j]["release_date"];
-        let numTracks = albums.items[j]["total_tracks"];
-        if (albumUniques.indexOf(albumName) > 0) {
-            continue;
-            };
-        albumUniques.push(albumName);
-        albumResults.push({
-            "albumName": albumName,
-            "albumPic300": albumPic300,
-            "releaseDate": releaseDate,
-            "numTracks": numTracks
-        });
-    };
-}
 
 function handleTopTracks(tracks){
     // grab 5 tracks, no more than 2 from one album
