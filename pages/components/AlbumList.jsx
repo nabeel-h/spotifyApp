@@ -9,8 +9,8 @@ class AlbumList extends React.Component {
     };
     render() {
         let albumData = this.props.data;
-        console.log("Data passed(state) into AlbumList", this.state);
-        console.log("Data passed(props) into AlbumList", this.props.data);
+        //console.log("Data passed(state) into AlbumList", this.state);
+        //console.log("Data passed(props) into AlbumList", this.props.data);
         if (!albumData) {
             return(
                 <div>
@@ -28,7 +28,7 @@ class AlbumList extends React.Component {
         } else {
 
         return(
-            <div>
+            <div className="albumList_container">
                 <div className="albumResults">
                     {albumData.map((album, i) => <Album key={i}
                     data={album} />)}
@@ -71,7 +71,7 @@ class Album extends React.Component {
                     <p># of Tracks: {this.props.data.numTracks}</p>
                 </span>
                 <img src={this.props.data.albumPic300.url} alt={this.props.data.albumName} width="300" height="300"></img>
-                <p>{this.props.data.albumName}</p>
+                <span>{this.props.data.albumName}</span>
                 <style>{`
                     .albumDiv {
                     margin: 1rem;
@@ -79,10 +79,18 @@ class Album extends React.Component {
                     word-wrap: break-word;
                     text-align: center;
                     max-width: 300px;
+                    background-color: grey;
                     }
                     p {
                         text-align: center;
                         word-wrap: break-word;
+                    }
+
+                    span {
+                        text-align: center;
+                        word-wrap; break-word;
+                        color: white;
+                        width: 100%;
                     }
 
                     .albumDiv:hover .tooltip {

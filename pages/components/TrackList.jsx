@@ -14,14 +14,25 @@ class TrackList extends React.Component {
             );
         } else {
         return(
-                <div>
-                    <p>Top Tracks:</p>
+                <div className="trackList_container">
+                    <p id="topTracks_p">Top Tracks:</p>
                     <div className="trackList">
                     {trackList.map((track, i) => <Track index={i}
                     data={track} />)}
                     </div>
                     <style jsx>{`
                             {
+                                .trackList {
+                                    text-align: center;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                #topTracks_p {
+                                    color: white;
+                                    margin-bottom: 0px;
+                                    text-align: center;
+                                }
                                 
                         }
                     `}</style>
@@ -38,22 +49,23 @@ class Track extends React.Component {
         let trackNumber = this.props.index + 1;
         return(
                 <div className="track">
-                <p>{trackNumber + ". " + this.props.data.trackName}</p>
+                <span>{trackNumber + ". " + this.props.data.trackName}</span>
                 <style>{`
-                
-                
-                .track p {
-                    text-align: center;
-                    background-color: green;
-                    color: black;
+                .track span {
+                    text-align: left;
+                    background-color: #444;
+                    color: #fff;
                     border-radius: 5px;
                     padding: 2px;
                     font-size: 100%;
+                    min-width: 300px;
+                    max-width: 600px;
+                    display: inline-block;
                     }
-                .track > p:nth-child(even) {
-                    background-color: grey;
+                .track:nth-child(odd) > span {
+                    background-color: #ccc;
+                    color: #000;
                 }
-                
                     `}
                 </style>
                 </div>

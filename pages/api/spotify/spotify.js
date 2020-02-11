@@ -87,9 +87,9 @@ function handleTopTracks(tracks){
 
     tracks.tracks.forEach(function(track) {
         let albumName = track.album.id;
-        let songName = track.name;
-        let songID = track.id;
-        let songReleaseDate = track.release_date;
+        let trackName = track.name;
+        let trackID = track.id;
+        let trackReleaseDate = track.release_date;
         
         if (albumCounter.hasOwnProperty(albumName) === false) {
             albumCounter[String(albumName)] = 0;
@@ -105,11 +105,11 @@ function handleTopTracks(tracks){
             return;
 
         };
-        uniqueTracks.push(songID);
+        uniqueTracks.push(trackID);
         trackList.push({
-            "songName": songName,
-            "songID": songID,
-            "songReleaseDate": songReleaseDate,
+            "trackName": trackName,
+            "trackID": trackID,
+            "trackReleaseDate": trackReleaseDate,
             "albumID": albumName
         });
     });
@@ -118,17 +118,17 @@ function handleTopTracks(tracks){
     if (trackList.length < 5) {
         tracks.tracks.forEach(function(track) {
             let albumName = track.album.id;
-            let songName = track.name;
-            let songID = track.id;
-            let songReleaseDate = track.release_date;
+            let trackName = track.name;
+            let trackID = track.id;
+            let trackReleaseDate = track.release_date;
 
             if (uniqueTracks.indexOf(songID) > 0) {
                 return;
             };
             trackList.push({
-                "songName": songName,
-                "songID": songID,
-                "songReleaseDate": songReleaseDate,
+                "trackName": trackName,
+                "trackID": trackID,
+                "trackReleaseDate": trackReleaseDate,
                 "albumID": albumName
             });
 
@@ -141,4 +141,4 @@ function handleTopTracks(tracks){
     };
 };
 
-export {createFormBody, getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks}
+export {createFormBody, getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks};

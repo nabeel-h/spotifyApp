@@ -25,13 +25,16 @@ class ArtistSummary extends React.Component {
         this.setState({
             artist: initArtist,
             albums: this.generateArtistAlbums(this.updateAlbumsCallback, initArtist),
-            topTracks: [{trackName: "All Eyez on Me"}, {trackName: "Changes"}, {trackName: "Aint nuthin but a gansta party"}]
+            //topTracks: [{trackName: "All Eyez on Me"}, {trackName: "Changes"}, {trackName: "Aint nuthin but a gansta party"}]
+            topTracks: this.generateArtistTopTracks(this.updateArtistTopTracksCallback, initArtist)
         });
         }
     
     _handleKeyDown = (e) => {
         if (e.key === "Enter") {
             this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
+            this.generateArtistTopTracks(this.updateArtistTopTracksCallback, this.state.artist);
+
         };
     };
 
@@ -41,12 +44,18 @@ class ArtistSummary extends React.Component {
 
     handleArtistSubmit = (event) => {
         this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
+        this.generateArtistTopTracks(this.updateArtistTopTracksCallback, this.state.artist);
     }
+
+    updateArtistTopTracksCallback = (tracks) => {
+        let trackResults = handleTopTracks(tracks);
+        this.setState({topTracks: trackResults});
+    };
 
     updateAlbumsCallback = (albums) => {
         //this.setState({albums: albumResults})
         let albumResults = [];
-        console.log("API CALL ALBUMS", albums);
+        //console.log("API CALL ALBUMS", albums);
         // keeps track of unique album names
         // if already in there, then dont list
         let albumUniques = [];
@@ -65,8 +74,8 @@ class ArtistSummary extends React.Component {
                 "releaseDate": releaseDate,
                 "numTracks": numTracks
             });
-        console.log("CLEANED ARRAY ALBUMS for ARIST: " + this.state.artist, albumResults);
-        console.log("ALB RESULTS - CALLBACK", albumResults);
+        //console.log("CLEANED ARRAY ALBUMS for ARIST: " + this.state.artist, albumResults);
+        //console.log("ALB RESULTS - CALLBACK", albumResults);
         this.setState({
             albums: albumResults
             })
@@ -77,11 +86,23 @@ class ArtistSummary extends React.Component {
         console.log(this.state);
     }
 
+    generateArtistTopTracks = (updateArtistTopTracksCallback, artistInput) => {
+        getAccessToken().then(function(token) {
+            let accessToken = token["access_token"];
+            searchArtist(artistInput, accessToken).then(function(response) {
+                let artistID = response.artists.items[0]["id"];
+                getArtistTopTracks(artistID, accessToken).then(function(tracks) {
+                    updateArtistTopTracksCallback(tracks);
+                })                
+            })
+        })
+    };
+
     generateArtistAlbums = (updateAlbumsCallback, artistInput) => {
         getAccessToken().then(function(token) {
             let accessToken = token["access_token"];
               searchArtist(artistInput, accessToken).then(function(response) {
-                console.log("API CALL RESPONSE:", response);
+                //console.log("API CALL RESPONSE:", response);
                 let artistID = response.artists.items[0]["id"];
                 getArtistAlbums(artistID, accessToken).then(function(albums) {
                     updateAlbumsCallback(albums);
@@ -91,10 +112,11 @@ class ArtistSummary extends React.Component {
     };
 
     render() {
-        console.log("Data pre render",this.state);
+        //console.log("Data pre render",this.state);
         return (
         <div>
             <Main />
+            <div id="header_container">
             <label>Artist Name:
             <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleArtistChange} onKeyDown={this._handleKeyDown}/>
             </label>
@@ -103,11 +125,19 @@ class ArtistSummary extends React.Component {
             <style jsx>{`
                 text-align: center;
             `}</style>
+            </div>
+            <div id="artist_container">
             <TrackList data={this.state.topTracks}/>
             <AlbumList data={this.state.albums}/>
-            <style>
-
+            <style>{`
+                #artist_container {
+                    display: flex;
+                    flex-direction: row;
+                    background-color: black;
+                }
+            `}
             </style>
+            </div>
         </div>
         );
     }
