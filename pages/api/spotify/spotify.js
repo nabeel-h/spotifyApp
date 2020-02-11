@@ -1,9 +1,9 @@
 
-export let CLIENT_ID = "5a9ee656e60549c5999eb591375e3af9";
-export let CLIENT_SECRET = "50c5be6ce3684f578b1693b8007d6c0e";
+let CLIENT_ID = "5a9ee656e60549c5999eb591375e3af9";
+let CLIENT_SECRET = "50c5be6ce3684f578b1693b8007d6c0e";
 
 // Used to supply proper body format for x-www-form-urlencoded in body POST request to /token endpoint
-export function createFormBody(Data) {
+function createFormBody(Data) {
     var formBody = [];
     for (var property in Data) {
         var encodedKey = encodeURIComponent(property);
@@ -13,7 +13,7 @@ export function createFormBody(Data) {
     return formBody
     };
 
-export async function getAccessToken() {
+async function getAccessToken() {
     const Url = "https://accounts.spotify.com/api/token";
     const Data = {grant_type: "client_credentials"};
 
@@ -31,7 +31,7 @@ export async function getAccessToken() {
     return json;
 };
 
-export async function searchArtist(artist, access_token) {
+async function searchArtist(artist, access_token) {
     let artist_split = artist.split();
     let artist_query = artist_split.join("%20")
     console.log(artist_query)
@@ -49,7 +49,7 @@ export async function searchArtist(artist, access_token) {
     return json;
 };
 
-export async function getArtistAlbums(artistID, access_token) {
+async function getArtistAlbums(artistID, access_token) {
     const Url = "https://api.spotify.com/v1/artists/"+artistID+"/albums";
     console.log(Url);
     const otherParam = {
@@ -64,7 +64,7 @@ export async function getArtistAlbums(artistID, access_token) {
 };
 
 
-export async function getArtistTopTracks(artistID, access_token) {
+async function getArtistTopTracks(artistID, access_token) {
     const Url = "https://api.spotify.com/v1/artists/"+artistID+"/top-tracks?country=US";
     console.log(Url);
     const otherParam = {
@@ -79,7 +79,7 @@ export async function getArtistTopTracks(artistID, access_token) {
 };
 
 
-export function handleTopTracks(tracks){
+function handleTopTracks(tracks){
     // grab 5 tracks, no more than 2 from one album
     let trackList = [];
     let albumCounter = {};
@@ -140,3 +140,5 @@ export function handleTopTracks(tracks){
     return trackList;
     };
 };
+
+export {createFormBody, getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks}

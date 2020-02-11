@@ -1,3 +1,3 @@
-import Albums from './views/Albums.js';
+import ArtistSummary from './views/ArtistSummary.js';
 
-export default Albums;
+export default ArtistSummary;
