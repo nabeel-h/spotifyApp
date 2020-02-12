@@ -4,7 +4,7 @@ export default function Index() {
   return (
     <div>
       <Header />
-      <p>Hi this is my spotify app.</p>
+      <p>Hi this is my playlist creator.</p>
     </div>
   );
 }

@@ -37,7 +37,7 @@ class AlbumList extends React.Component {
                      {
                     display: flex;
                     flex-wrap: wrap;
-                    justify-content: center;
+                    
                     }
                 `}</style>
             </div>

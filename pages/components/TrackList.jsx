@@ -22,6 +22,9 @@ class TrackList extends React.Component {
                     </div>
                     <style jsx>{`
                             {
+                                .trackList_container {
+                                    padding: 10px 10px 10px 10px;
+                                }
                                 .trackList {
                                     text-align: center;
                                     display: flex;
