@@ -134,7 +134,9 @@ class ArtistSummary extends React.Component {
                     display: flex;
                     flex-direction: row;
                     background-color: black;
+                    flex-wrap: wrap;
                 }
+                
             `}
             </style>
             </div>
