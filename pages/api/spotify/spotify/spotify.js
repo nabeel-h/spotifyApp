@@ -122,7 +122,7 @@ function handleTopTracks(tracks){
             let trackID = track.id;
             let trackReleaseDate = track.release_date;
 
-            if (uniqueTracks.indexOf(songID) > 0) {
+            if (uniqueTracks.indexOf(trackID) > 0) {
                 return;
             };
             trackList.push({

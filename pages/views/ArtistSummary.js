@@ -1,7 +1,7 @@
 import React from 'react';
 import AlbumList from '../components/AlbumList.jsx';
 import TrackList from '../components/TrackList.jsx';
-import {getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from '../api/spotify/spotify.js';
+import {getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from '../api/spotify/spotify/spotify.js';
 import Main from '../layouts/Main.js'
 
 
