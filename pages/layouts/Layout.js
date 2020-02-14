@@ -1,6 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import Header from '../components/Header.jsx';
+import NavBar from '../components/NavBar.jsx';
 
 class Layout extends React.Component {
     render() {
@@ -8,7 +8,7 @@ class Layout extends React.Component {
             <div id="wrapper">
                 <Helmet defaultTitle="SpotifyApp">     
                 </Helmet>
-                <Header></Header>
+                <NavBar></NavBar>
                 {this.props.children}
             </div>
         )

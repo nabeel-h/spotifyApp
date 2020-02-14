@@ -1,7 +1,8 @@
 import React from 'react';
-import AlbumList from '../components/AlbumList.jsx';
-import TrackList from '../components/TrackList.jsx';
-import {getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from '../api/spotify/spotify/spotify.js';
+import ArtistAlbumList from '../components/ArtistAlbumList.jsx';
+import ArtistTrackList from '../components/ArtistTrackList.jsx';
+import ArtistSearch from '../components/ArtistSearch.jsx';
+import {getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from '../api/spotify/spotify.js';
 
 class ArtistSummary extends React.Component {
     constructor(){
@@ -14,10 +15,19 @@ class ArtistSummary extends React.Component {
     };
   
     componentDidMount(){
+        if (!this.props.artist) {
+            return;
+        } else {
         this.initData();
+        };
     };
 
+    componentDidUpdate(){
+
+    }
+
     initData = () => {
+        console.log(this.props);
         let initArtist = this.props.artist;
         this.setState({
             artist: initArtist,
@@ -26,7 +36,7 @@ class ArtistSummary extends React.Component {
             topTracks: this.generateArtistTopTracks(this.updateArtistTopTracksCallback, initArtist)
         });
         }
-    
+    /*
     _handleKeyDown = (e) => {
         if (e.key === "Enter") {
             this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
@@ -34,21 +44,30 @@ class ArtistSummary extends React.Component {
 
         };
     };
+    */
 
-    handleArtistChange = (event) => {
-        this.setState({artist: event.target.value})
-    };
+    
 
-    handleArtistSubmit = (event) => {
+    handleArtistSubmit = (artist) => {
         this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
         this.generateArtistTopTracks(this.updateArtistTopTracksCallback, this.state.artist);
     }
 
+    // update ArtistSummary state's artist value and artist info
+    updateArtistCallback = (artist) => {
+        this.setState({artist: artist})
+        this.generateArtistAlbums(this.updateAlbumsCallback, artist);
+        this.generateArtistTopTracks(this.updateArtistTopTracksCallback, artist);
+        
+    };
+
+    // update ArtistSummary state for toptracks
     updateArtistTopTracksCallback = (tracks) => {
         let trackResults = handleTopTracks(tracks);
         this.setState({topTracks: trackResults});
     };
 
+    // updates albums state
     updateAlbumsCallback = (albums) => {
         //this.setState({albums: albumResults})
         let albumResults = [];
@@ -110,21 +129,26 @@ class ArtistSummary extends React.Component {
 
     render() {
         //console.log("Data pre render",this.state);
+
+        // when url is refreshed, it returns props with undefined artist so this just renders
+        // the searchartist bar for now.
+        if (!this.state.artist) {
+            return(
+            <div>
+                <ArtistSearch artist={this.state.artist}
+                updateArtistCallback={this.updateArtistCallback}
+                printStateCallback={this.printState}/>
+            </div>
+        );
+        } else {
         return (
         <div>
-            <div id="header_container">
-            <label>Artist Name:
-            <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleArtistChange} onKeyDown={this._handleKeyDown}/>
-            </label>
-            <input type="submit" value="submit" onClick={this.handleArtistSubmit}/>
-            <input type="submit" value="consolePrintState" onClick={this.printState}/>
-            <style jsx>{`
-                text-align: center;
-            `}</style>
-            </div>
+            <ArtistSearch artist={this.state.artist}
+                          updateArtistCallback={this.updateArtistCallback}
+                          printStateCallback={this.printState}/>
             <div id="artist_container">
-            <TrackList data={this.state.topTracks}/>
-            <AlbumList data={this.state.albums}/>
+            <ArtistTrackList data={this.state.topTracks}/>
+            <ArtistAlbumList data={this.state.albums}/>
             <style>{`
                 #artist_container {
                     display: flex;
@@ -139,7 +163,8 @@ class ArtistSummary extends React.Component {
             </div>
         </div>
         );
-    }
+        };
+    };
 };
 
 export default ArtistSummary;

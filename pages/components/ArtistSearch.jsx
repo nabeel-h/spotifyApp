@@ -5,41 +5,55 @@ class ArtistSearch extends React.Component {
         super(props);
         this.state = {
             artist: null
-        }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.updateArtistCallback = this.updateArtistCallback.bind(this);
-    }
+        };
+    };
+        
+    componentWillMount() {
+        this.setState({
+            artist: this.props.artist
+        });
+    };
+    
+    handleArtistChange = (event) => {
+        this.setState({artist: event.target.value});
+    };
 
-    handleChange(event) {
-        this.setState({artist: event.target.value})
-    }
+    _handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            this.updateArtistCallback(this.state.artist);
+        };
+    };
 
-    handleSubmit(event) {
+    handleArtistSubmit = (event) => {
         console.log("submit button was clicked for: "+this.state.artist);
-        this.updateArtistCallback();
+        this.props.updateArtistCallback(this.state.artist);
         //alert(this.state.artist);
-    }
+    };
 
-    updateArtistCallback() {
-        this.props.artistSearchCallback(this.state.artist);
+    updateArtistCallback = () =>{
+        this.props.updateArtistCallback(this.state.artist);
+    };
+
+    printStateCallback = () =>{
+        this.props.printStateCallback()
     }
     
-    render() {
+    
+    render()  
+        {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>Artist Name:
-                <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleChange}/>
-                </label>
-                <input type="submit" value="submit" />
-                <style jsx>{`
-                    text-align: center;
-                `}</style>
-            </form>
-        )
-    }
-}
-
-
+            <div id="search_container">
+            <label>Artist Name:
+            <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleArtistChange} onKeyDown={this._handleKeyDown}/>
+            </label>
+            <input type="submit" value="submit" onClick={this.handleArtistSubmit}/>
+            <input type="submit" value="consolePrintState" onClick={this.printStateCallback}/>
+            <style jsx>{`
+                text-align: center;
+            `}</style>
+            </div>
+            );
+        };
+    };
 
 export default ArtistSearch;

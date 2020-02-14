@@ -4,7 +4,7 @@ import Layout from './layouts/Layout.js';
 
 const ArtistSummaryPageLink = props => (
     <li>
-        <Link href={`/artistsummary_page?artist=${props.artist}`}>
+        <Link href={`/artistsummary_page?artist=${props.artist}`} as={`/artistsummary_page?artist=${props.artist}`}>
             <a>{props.artist}</a>
         </Link>
     </li>

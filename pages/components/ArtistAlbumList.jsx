@@ -2,7 +2,7 @@ import React from 'react';
 
 
 
-class AlbumList extends React.Component {
+class ArtistAlbumList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {albums: props}
@@ -30,7 +30,7 @@ class AlbumList extends React.Component {
         return(
             <div className="albumList_container">
                 <div className="albumResults">
-                    {albumData.map((album, i) => <Album key={i}
+                    {albumData.map((album, i) => <ArtistAlbum key={i}
                     data={album} />)}
                 </div>
                 <style jsx>{`
@@ -47,22 +47,8 @@ class AlbumList extends React.Component {
     }
 }
 
-class AlbumHeader extends React.Component {
-    render() {
-        return (
-        <div>
-            <h1>{this.props.artist}</h1>
-        <style jsx>{`
-            {
-                text-align: center;
-            }
-        `}</style>
-        </div>
-        );    
-    }
-}
 
-class Album extends React.Component {
+class ArtistAlbum extends React.Component {
     render() {
         return (
             <div className="albumDiv">
@@ -114,4 +100,4 @@ class Album extends React.Component {
     }
 }
 
-export default AlbumList;
+export default ArtistAlbumList;

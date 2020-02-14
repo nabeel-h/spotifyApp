@@ -1,6 +1,6 @@
 import React from 'react';
 
-class TrackList extends React.Component {
+class ArtistTrackList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {tracks: props}
@@ -17,7 +17,7 @@ class TrackList extends React.Component {
                 <div className="trackList_container">
                     <p id="topTracks_p">Top Tracks:</p>
                     <div className="trackList">
-                    {trackList.map((track, i) => <Track index={i}
+                    {trackList.map((track, i) => <ArtistTrack index={i}
                     data={track} />)}
                     </div>
                     <style jsx>{`
@@ -47,7 +47,7 @@ class TrackList extends React.Component {
 
 };
 
-class Track extends React.Component {
+class ArtistTrack extends React.Component {
     render() {
         let trackNumber = this.props.index + 1;
         return(
@@ -77,4 +77,4 @@ class Track extends React.Component {
 };
 
 
-export default TrackList;
+export default ArtistTrackList;
