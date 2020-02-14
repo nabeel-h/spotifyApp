@@ -1,10 +1,9 @@
-import Header from './components/Header';
+import Layout from './layouts/Layout.js';
 
 export default function Index() {
   return (
-    <div>
-      <Header />
+    <Layout>
       <p>Hi this is my playlist creator.</p>
-    </div>
+    </Layout>
   );
 }

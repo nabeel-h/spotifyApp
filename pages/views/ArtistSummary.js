@@ -2,9 +2,6 @@ import React from 'react';
 import AlbumList from '../components/AlbumList.jsx';
 import TrackList from '../components/TrackList.jsx';
 import {getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from '../api/spotify/spotify/spotify.js';
-import Main from '../layouts/Main.js'
-
-
 
 class ArtistSummary extends React.Component {
     constructor(){
@@ -21,7 +18,7 @@ class ArtistSummary extends React.Component {
     };
 
     initData = () => {
-        let initArtist = "Tupac";
+        let initArtist = this.props.artist;
         this.setState({
             artist: initArtist,
             albums: this.generateArtistAlbums(this.updateAlbumsCallback, initArtist),
@@ -115,7 +112,6 @@ class ArtistSummary extends React.Component {
         //console.log("Data pre render",this.state);
         return (
         <div>
-            <Main />
             <div id="header_container">
             <label>Artist Name:
             <input type="text" id="artistInput" value={this.state.artist} onChange={this.handleArtistChange} onKeyDown={this._handleKeyDown}/>

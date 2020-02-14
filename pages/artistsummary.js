@@ -1,12 +1,27 @@
-import Header from './components/Header.jsx';
-import ArtistSummary from './views/ArtistSummary.js';
+import Link from 'next/link';
+import Layout from './layouts/Layout.js';
 
 
-export default function Index() {
+const ArtistSummaryPageLink = props => (
+    <li>
+        <Link href={`/artistsummary_page?artist=${props.artist}`}>
+            <a>{props.artist}</a>
+        </Link>
+    </li>
+);
+
+class Index extends React.Component {
+    render() {
     return (
-        <div>
-            <Header />
-            <ArtistSummary />
-        </div>
-    );
+        <Layout>
+            <ul>
+                <ArtistSummaryPageLink artist="Eminem" />
+                <ArtistSummaryPageLink artist="Kendrick Lamar"/>
+            </ul>
+        </Layout>
+        );
+    };
 };
+
+export default Index;
+
