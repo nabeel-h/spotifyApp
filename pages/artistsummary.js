@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Layout from './layouts/Layout.js';
+import ArtistSummary from './views/ArtistSummary.js';
 
 
 const ArtistSummaryPageLink = props => (
@@ -17,7 +18,9 @@ class Index extends React.Component {
             <ul>
                 <ArtistSummaryPageLink artist="Eminem" />
                 <ArtistSummaryPageLink artist="Kendrick Lamar"/>
+                <ArtistSummaryPageLink artist="Queen"/>
             </ul>
+            <ArtistSummary />
         </Layout>
         );
     };

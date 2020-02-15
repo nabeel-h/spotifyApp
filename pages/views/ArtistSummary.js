@@ -13,21 +13,17 @@ class ArtistSummary extends React.Component {
                     topTracks: null
             }
     };
-  
+
     componentDidMount(){
         if (!this.props.artist) {
             return;
         } else {
         this.initData();
         };
-    };
-
-    componentDidUpdate(){
-
     }
 
     initData = () => {
-        console.log(this.props);
+        console.log("This props",this.props);
         let initArtist = this.props.artist;
         this.setState({
             artist: initArtist,
@@ -36,18 +32,7 @@ class ArtistSummary extends React.Component {
             topTracks: this.generateArtistTopTracks(this.updateArtistTopTracksCallback, initArtist)
         });
         }
-    /*
-    _handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
-            this.generateArtistTopTracks(this.updateArtistTopTracksCallback, this.state.artist);
-
-        };
-    };
-    */
-
     
-
     handleArtistSubmit = (artist) => {
         this.generateArtistAlbums(this.updateAlbumsCallback, this.state.artist);
         this.generateArtistTopTracks(this.updateArtistTopTracksCallback, this.state.artist);

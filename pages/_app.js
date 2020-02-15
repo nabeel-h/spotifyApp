@@ -1,4 +1,4 @@
-import "./static/style.css";
+import "./static/css/style.css";
 
 export default function MyApp({ Component, pageProps }) {
     return <Component {...pageProps} />
