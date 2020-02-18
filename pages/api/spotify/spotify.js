@@ -79,7 +79,7 @@ async function getArtistTopTracks(artistID, access_token) {
 };
 
 
-function handleTopTracks(tracks){
+function handleTopTracks(tracks, artist){
     // grab 5 tracks, no more than 2 from one album
     let trackList = [];
     let albumCounter = {};
@@ -110,7 +110,8 @@ function handleTopTracks(tracks){
             "trackName": trackName,
             "trackID": trackID,
             "trackReleaseDate": trackReleaseDate,
-            "albumID": albumName
+            "albumID": albumName,
+            "artistName": artist
         });
     });
 
