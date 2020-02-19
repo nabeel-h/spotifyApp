@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from './layouts/Layout.js';
 import coachella2020 from './assets/data.js';
 
-import {getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from './api/spotify/spotify.js';
+import {loadspotifyAccessToken, getAccessToken, searchArtist, getArtistAlbums, getArtistTopTracks, handleTopTracks} from './api/spotify/spotify.js';
 
 
 export default function Index() {
@@ -28,6 +28,7 @@ class Playlist extends React.Component{
     this.setState({
       playlist: this.props.playlist
     })
+    loadspotifyAccessToken();
   };
 
   generateAllArtistTracks = () => {
@@ -43,6 +44,7 @@ class Playlist extends React.Component{
     }
 
   deleteArtistCallback = (artist) => {
+    /*
     console.log("Deleting artist...", artist);
     let newPlaylist = this.state.playlist.artists;
     
@@ -53,7 +55,7 @@ class Playlist extends React.Component{
         playlist: {
             artists: newPlaylist
         }
-    })
+    })*/
   };
 
   render() {
@@ -73,19 +75,14 @@ class Playlist extends React.Component{
 };
 
 class ArtistCard extends React.Component {
-  constructor(){
+  constructor(props){
     super();
     this.state = {
-      artist: null,
+      artist: props.artist,
       tracks: null
     };
   };
 
-  componentWillMount() {
-    this.setState({
-      artist: this.props.artist
-    })
-  };
 
   handlegetTracksSubmit = () => {
     this.generateTracksForArtists(this.updateArtistTracksCallback, this.props.artist)
@@ -93,7 +90,7 @@ class ArtistCard extends React.Component {
 
 
   updateArtistTracksCallback = (tracks) => {
-    let artist = this.state.artist
+    let artist = this.props.artist
     let topTracks = handleTopTracks(tracks, artist);
     this.setState({tracks: topTracks});
   };
@@ -101,9 +98,18 @@ class ArtistCard extends React.Component {
   handleDeleteArtist = () => {
     let artist = this.props.artist;
     this.deleteArtistCallback(artist);
-    this.setState({
-        tracks: []
+    
+    /*
+    let tracks = this.state.tracks;
+    tracks.forEach(track => {
+      this.deleteTrackCallback(track);
     });
+    */
+
+    this.setState({
+      artist: null,
+      tracks: null
+    })
 };
 
   deleteArtistCallback = (artist) => {
@@ -111,16 +117,16 @@ class ArtistCard extends React.Component {
   };
 
   deleteTrackCallback = (track) =>{
-   let tracks = this.state.tracks;
-    var removeIndex = tracks.map(function(track) { return track.trackName; }).indexOf(track);
+  let tracks = this.state.tracks;
+  var removeIndex = tracks.map(function(track) { return track.trackName; }).indexOf(track);
 
-    // remove object
-    tracks.splice(removeIndex, 1);
-   console.log("Deleting.."+track);
-   console.log(tracks);
-   this.setState({
-       tracks: tracks
-   });
+  // remove object
+  tracks.splice(removeIndex, 1);
+  console.log("Deleting.."+track);
+  console.log(tracks);
+  this.setState({
+      tracks: tracks
+  });
   };
 
   generateTracksForArtists = (updateArtistTracksCallback, artistInput) => {
@@ -139,10 +145,11 @@ class ArtistCard extends React.Component {
   render() {
 
     let tracks = this.state.tracks;
+    let artist = this.props.artist;
     if (!tracks || tracks.length == 0) {
       return(
           <div>
-          <a>{this.props.artist}    </a>
+          <a>{artist}    </a>
           <button onClick={this.handlegetTracksSubmit}>Get Tracks</button>
           <button onClick={this.handleDeleteArtist}>Delete Artist</button>
           </div>
@@ -150,10 +157,10 @@ class ArtistCard extends React.Component {
     } else {
     return (
         <div>
-            <a>{this.props.artist}    </a>
+            <a>{artist}    </a>
             <button onClick={this.handlegetTracksSubmit}>Get Tracks</button>
             <button onClick={this.handleDeleteArtist}>Delete Artist</button>
-            <p>{tracks.map((track, i) => <Track track={track.trackName} deleteTrack={this.deleteTrackCallback}/>)}</p>
+            <p>{tracks.map((track, i) => <Track track={track.trackName} artist={artist} deleteTrack={this.deleteTrackCallback}/>)}</p>
         </div>
         );
     };
@@ -163,6 +170,15 @@ class ArtistCard extends React.Component {
 
 
 class Track extends React.Component{
+  constructor(props){
+    super();
+    this.state = {
+      track: props.track,
+      artist: props.artist
+    };
+  };
+
+ 
 
 handleDeleteTrack = () => {
                             this.deleteTrackCallback();

@@ -88,29 +88,24 @@ class ArtistSummary extends React.Component {
     }
 
     generateArtistTopTracks = (updateArtistTopTracksCallback, artistInput) => {
-        getAccessToken().then(function(token) {
-            let accessToken = token["access_token"];
-            searchArtist(artistInput, accessToken).then(function(response) {
-                let artistID = response.artists.items[0]["id"];
-                getArtistTopTracks(artistID, accessToken).then(function(tracks) {
-                    updateArtistTopTracksCallback(tracks);
+        searchArtist(artistInput).then(function(response) {
+            let artistID = response.artists.items[0]["id"];
+            getArtistTopTracks(artistID).then(function(tracks) {
+                updateArtistTopTracksCallback(tracks);
                 })                
-            })
-        })
-    };
+            });
+        };
 
     generateArtistAlbums = (updateAlbumsCallback, artistInput) => {
-        getAccessToken().then(function(token) {
-            let accessToken = token["access_token"];
-              searchArtist(artistInput, accessToken).then(function(response) {
-                //console.log("API CALL RESPONSE:", response);
-                let artistID = response.artists.items[0]["id"];
-                getArtistAlbums(artistID, accessToken).then(function(albums) {
-                    updateAlbumsCallback(albums);
+            
+        searchArtist(artistInput).then(function(response) {
+        //console.log("API CALL RESPONSE:", response);
+        let artistID = response.artists.items[0]["id"];
+        getArtistAlbums(artistID).then(function(albums) {
+            updateAlbumsCallback(albums);
                 })
-              });
-        });
-    };
+            });
+        };
 
     render() {
         //console.log("Data pre render",this.state);
