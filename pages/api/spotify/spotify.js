@@ -21,7 +21,9 @@ const setExpirationTimestamp = EXPIRATION_TIME => {
 
 export const getLocalAccessToken = () => {
     console.log("Getting stored access token...");
-	return window.localStorage.getItem('spotify_access_token');
+    runExpirationChecker();
+    return window.localStorage.getItem('spotify_access_token');
+    
 };
 
 export const getLocalRefreshToken = () => {
@@ -90,7 +92,7 @@ async function getAccessToken() {
 async function searchArtist(artist) {
     let access_token = getLocalAccessToken();
     console.log(window.localStorage);
-    console.log("Search artist - access token", access_token);
+    console.log("Search artist - access token", access_token, artist);
     let artist_split = artist.split();
     let artist_query = artist_split.join("%20")
     console.log("Searching for artists...",artist_query)

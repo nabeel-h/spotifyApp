@@ -99,7 +99,7 @@ class ArtistSummary extends React.Component {
     generateArtistAlbums = (updateAlbumsCallback, artistInput) => {
             
         searchArtist(artistInput).then(function(response) {
-        //console.log("API CALL RESPONSE:", response);
+        console.log("API CALL RESPONSE:", response);
         let artistID = response.artists.items[0]["id"];
         getArtistAlbums(artistID).then(function(albums) {
             updateAlbumsCallback(albums);
